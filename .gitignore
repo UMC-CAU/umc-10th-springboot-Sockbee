@@ -59,3 +59,36 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### macOS ###
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+
+### Sensitive / Local config ###
+application-local.yml
+application-local.properties
+application-secret.yml
+application-secret.properties
+application-prod.yml
+application-prod.properties
+.env
+.env.*
+!.env.example
+secrets.yml
+secrets.properties
+
+### Logs ###
+logs/
+*.log.*
+log/
+
+### Temp / OS ###
+*.orig
+*.rej
+*.swp
+*~
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/shelf/
