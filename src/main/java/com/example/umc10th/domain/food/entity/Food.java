@@ -1,6 +1,7 @@
 package com.example.umc10th.domain.food.entity;
 
 import com.example.umc10th.domain.food.enums.FoodCategory;
+import com.example.umc10th.domain.user.entity.UserFood;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,5 +1,6 @@
 package com.example.umc10th.domain.term.entity;
 
+import com.example.umc10th.domain.user.entity.UserTerm;
 import jakarta.persistence.*;
 import lombok.*;
 

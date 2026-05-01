@@ -1,5 +1,7 @@
 package com.example.umc10th.domain.store.entity;
 
+import com.example.umc10th.domain.mission.entity.Mission;
+import com.example.umc10th.domain.review.entity.Review;
 import com.example.umc10th.domain.store.enums.FoodTag;
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,6 +1,8 @@
 package com.example.umc10th.domain.user.entity;
 
 import com.example.umc10th.domain.auth.entity.OAuth;
+import com.example.umc10th.domain.inquiry.entity.Inquiry;
+import com.example.umc10th.domain.review.entity.Review;
 import com.example.umc10th.domain.user.enums.Gender;
 import com.example.umc10th.domain.user.enums.UserStatus;
 import jakarta.persistence.*;

@@ -1,6 +1,7 @@
 package com.example.umc10th.domain.inquiry.entity;
 
 import com.example.umc10th.domain.inquiry.enums.InquiryStatus;
+import com.example.umc10th.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 

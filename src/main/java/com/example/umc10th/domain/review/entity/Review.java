@@ -1,6 +1,8 @@
 package com.example.umc10th.domain.review.entity;
 
 import com.example.umc10th.domain.review.enums.ReviewStatus;
+import com.example.umc10th.domain.store.entity.Store;
+import com.example.umc10th.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
