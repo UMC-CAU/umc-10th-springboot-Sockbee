@@ -1,6 +1,6 @@
-package com.example.umc10th.domain.entity;
+package com.example.umc10th.domain.store.entity;
 
-import com.example.umc10th.domain.enums.FoodTag;
+import com.example.umc10th.domain.store.enums.FoodTag;
 import jakarta.persistence.*;
 import lombok.*;
 

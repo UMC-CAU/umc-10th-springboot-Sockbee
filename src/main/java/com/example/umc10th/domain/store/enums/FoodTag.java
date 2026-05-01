@@ -1,4 +1,4 @@
-package com.example.umc10th.domain.enums;
+package com.example.umc10th.domain.store.enums;
 
 public enum FoodTag {
     KOREAN,       // 한식

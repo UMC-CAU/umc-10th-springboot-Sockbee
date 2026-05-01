@@ -1,7 +1,8 @@
-package com.example.umc10th.domain.entity;
+package com.example.umc10th.domain.user.entity;
 
-import com.example.umc10th.domain.enums.Gender;
-import com.example.umc10th.domain.enums.UserStatus;
+import com.example.umc10th.domain.auth.entity.OAuth;
+import com.example.umc10th.domain.user.enums.Gender;
+import com.example.umc10th.domain.user.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 

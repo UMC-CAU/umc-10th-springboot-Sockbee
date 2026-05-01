@@ -1,4 +1,4 @@
-package com.example.umc10th.domain.entity;
+package com.example.umc10th.domain.mission.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,4 +1,4 @@
-package com.example.umc10th.domain.enums;
+package com.example.umc10th.domain.auth.enums;
 
 public enum OAuthProvider {
     KAKAO,   // 카카오

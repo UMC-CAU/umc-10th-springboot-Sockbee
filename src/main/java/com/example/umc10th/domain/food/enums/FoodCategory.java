@@ -1,4 +1,4 @@
-package com.example.umc10th.domain.enums;
+package com.example.umc10th.domain.food.enums;
 
 public enum FoodCategory {
     KOREAN,       // 한식

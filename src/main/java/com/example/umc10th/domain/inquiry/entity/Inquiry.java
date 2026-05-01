@@ -1,18 +1,20 @@
-package com.example.umc10th.domain.entity;
+package com.example.umc10th.domain.inquiry.entity;
 
-import com.example.umc10th.domain.enums.MissionStatus;
+import com.example.umc10th.domain.inquiry.enums.InquiryStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "users_missions")
+@Table(name = "inquiries")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class UserMission {
+public class Inquiry {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,22 +24,22 @@ public class UserMission {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mission_id", nullable = false)
-    private Mission mission;
-
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "started_at", nullable = false)
-    private LocalDateTime startedAt;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MissionStatus status;
+    private InquiryStatus status;
 
-    @Column(name = "closed_at", nullable = false)
-    private LocalDateTime closedAt;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String content;
+
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    private String imageUrl;
+
+    @OneToMany(mappedBy = "inquiry", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<InquiryReply> inquiryReplies = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

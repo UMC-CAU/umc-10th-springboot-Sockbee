@@ -1,35 +1,31 @@
-package com.example.umc10th.domain.entity;
+package com.example.umc10th.domain.user.entity;
 
-import com.example.umc10th.domain.enums.OAuthProvider;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "OAuth")
+@Table(name = "users_foods")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class OAuth {
+public class UserFood {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "food_categories_id", nullable = false)
+    private Food food;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private OAuthProvider provider;
-
-    @Column(name = "provider_user_id", nullable = false)
-    private Long providerUserId;
-
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @PrePersist

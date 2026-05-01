@@ -1,4 +1,4 @@
-package com.example.umc10th.domain.enums;
+package com.example.umc10th.domain.user.enums;
 
 public enum Gender {
     MALE,     // 남성

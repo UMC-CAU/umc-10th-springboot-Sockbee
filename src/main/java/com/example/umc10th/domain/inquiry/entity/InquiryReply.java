@@ -1,4 +1,4 @@
-package com.example.umc10th.domain.entity;
+package com.example.umc10th.domain.inquiry.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,26 +6,22 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users_foods")
+@Table(name = "inquiries_replies")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class UserFood {
+public class InquiryReply {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "food_categories_id", nullable = false)
-    private Food food;
+    @JoinColumn(name = "qustion_id", nullable = false)  // ERD 원본 오타(qustion) 유지
+    private Inquiry inquiry;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @PrePersist

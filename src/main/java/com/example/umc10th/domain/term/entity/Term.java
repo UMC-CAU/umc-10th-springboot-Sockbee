@@ -1,28 +1,36 @@
-package com.example.umc10th.domain.entity;
+package com.example.umc10th.domain.term.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "inquiries_replies")
+@Table(name = "terms")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class InquiryReply {
+public class Term {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "qustion_id", nullable = false)  // ERD 원본 오타(qustion) 유지
-    private Inquiry inquiry;
+    @Column(nullable = false, length = 255)
+    private String name;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String contents;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "term", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<UserTerm> userTerms = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

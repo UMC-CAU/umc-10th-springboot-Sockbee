@@ -1,4 +1,4 @@
-package com.example.umc10th.domain.enums;
+package com.example.umc10th.domain.review.enums;
 
 public enum ReviewStatus {
     ACTIVE,   // 활성
