@@ -66,6 +66,10 @@ out/
 .LSOverride
 Thumbs.db
 
+### Markdown files in umc10th ###
+*.md
+!.github/**/*.md
+
 ### Sensitive / Local config ###
 application-local.yml
 application-local.properties
