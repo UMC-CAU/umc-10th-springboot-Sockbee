@@ -37,7 +37,7 @@ public class UserMission {
     @Column(nullable = false)
     private MissionStatus status;
 
-    @Column(name = "closed_at", nullable = false)
+    @Column(name = "closed_at")
     private LocalDateTime closedAt;
 
     @PrePersist
