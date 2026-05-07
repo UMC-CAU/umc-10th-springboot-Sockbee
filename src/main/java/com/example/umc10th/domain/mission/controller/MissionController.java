@@ -1,6 +1,7 @@
 package com.example.umc10th.domain.mission.controller;
 
 import com.example.umc10th.domain.mission.dto.MissionResponseDto;
+import com.example.umc10th.domain.mission.service.MissionService;
 import com.example.umc10th.global.apiPayload.ApiResponse;
 import com.example.umc10th.global.apiPayload.code.GeneralSuccessCode;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MissionController {
 
+    private final MissionService missionService;
+
     @GetMapping
     public ApiResponse<MissionResponseDto.AvailableMissionListResponse> getAvailableMissions(
             @RequestParam Long dongId,
             @RequestParam(required = false) Long lastMissionId,
             @RequestParam(defaultValue = "10") int size
     ) {
-        // TODO: service 구현 후 연결
-        return ApiResponse.onSuccess(GeneralSuccessCode.OK, null);
+        return ApiResponse.onSuccess(GeneralSuccessCode.OK,
+                missionService.getAvailableMissions(dongId, lastMissionId, size));
     }
 }
