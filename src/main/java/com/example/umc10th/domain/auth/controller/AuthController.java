@@ -2,6 +2,7 @@ package com.example.umc10th.domain.auth.controller;
 
 import com.example.umc10th.domain.auth.dto.AuthRequestDto;
 import com.example.umc10th.domain.auth.dto.AuthResponseDto;
+import com.example.umc10th.domain.auth.service.AuthService;
 import com.example.umc10th.global.apiPayload.ApiResponse;
 import com.example.umc10th.global.apiPayload.code.GeneralSuccessCode;
 import jakarta.validation.Valid;
@@ -16,11 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
+    private final AuthService authService;
+
     @PostMapping("/signup")
     public ApiResponse<AuthResponseDto.SignupResponse> signup(
             @Valid @RequestBody AuthRequestDto.SignupRequest request
     ) {
-        // TODO: service 구현 후 연결
-        return ApiResponse.onSuccess(GeneralSuccessCode.CREATED, null);
+        return ApiResponse.onSuccess(GeneralSuccessCode.CREATED, authService.signup(request));
     }
 }
