@@ -32,6 +32,9 @@ public class User {
     @Column(name = "phone_num", length = 13)
     private String phoneNum;
 
+    @Column(name = "user_name", nullable = false, length = 50)
+    private String name;
+
     @Column(nullable = false, length = 50)
     private String nickname;
 
@@ -99,5 +102,10 @@ public class User {
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    // 미션 완료 시 포인트 추가
+    public void addPoint(int amount) {
+        this.point += amount;
     }
 }

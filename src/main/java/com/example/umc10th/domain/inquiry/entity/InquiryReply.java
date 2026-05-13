@@ -21,6 +21,9 @@ public class InquiryReply {
     @JoinColumn(name = "qustion_id", nullable = false)  // ERD 원본 오타(qustion) 유지
     private Inquiry inquiry;
 
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String content;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

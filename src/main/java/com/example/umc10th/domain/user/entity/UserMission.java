@@ -37,11 +37,17 @@ public class UserMission {
     @Column(nullable = false)
     private MissionStatus status;
 
-    @Column(name = "closed_at", nullable = false)
+    @Column(name = "closed_at")
     private LocalDateTime closedAt;
 
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+    }
+
+    // 미션 성공 처리 — 상태 변경 + 종료 시각 기록
+    public void complete() {
+        this.status = MissionStatus.COMPLETE;
+        this.closedAt = LocalDateTime.now();
     }
 }
