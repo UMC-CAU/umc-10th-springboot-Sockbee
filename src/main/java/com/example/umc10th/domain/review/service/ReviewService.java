@@ -14,12 +14,14 @@ import com.example.umc10th.domain.user.entity.User;
 import com.example.umc10th.domain.user.exception.UserErrorCode;
 import com.example.umc10th.domain.user.exception.UserException;
 import com.example.umc10th.domain.user.repository.UserRepository;
+import com.example.umc10th.global.apiPayload.Pagination;
+import com.example.umc10th.global.apiPayload.code.GeneralErrorCode;
+import com.example.umc10th.global.exception.ProjectException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -44,35 +46,56 @@ public class ReviewService {
     }
 
     /**
-     * 내가 생성한 리뷰 목록 조회 (커서 페이지네이션).
-     * - sort=ID  : id 내림차순, 단일 커서(lastId)
-     * - sort=STAR: 별점 내림차순, 복합 커서(lastStar, lastId)
-     * 사진(imageUrl)은 응답에서 제외.
+     * 내 리뷰 목록 조회 — 커서 페이지네이션 + 정렬 분기.
+     * cursor 포맷:
+     *  - sort=ID  : "{id}"
+     *  - sort=STAR: "{star}:{id}"
      */
     @Transactional(readOnly = true)
-    public ReviewResponseDto.MyReviewListResponse getMyReviews(
-            Long userId, ReviewSort sort, Long lastId, Float lastStar, int size) {
+    public Pagination<ReviewResponseDto.MyReviewItem> getMyReviews(
+            Long userId, ReviewSort sort, String cursor, int size) {
 
-        List<Review> rows = (sort == ReviewSort.STAR)
-                ? reviewRepository.findMyReviewsOrderByStar(
-                        userId, lastStar, lastId, PageRequest.of(0, size + 1))
-                : reviewRepository.findMyReviewsOrderById(
-                        userId, lastId, PageRequest.of(0, size + 1));
-
-        boolean hasNext = rows.size() > size;
-        List<Review> page = hasNext ? rows.subList(0, size) : rows;
-
-        Long nextLastId = null;
-        Float nextLastStar = null;
-        if (!page.isEmpty()) {
-            Review tail = page.get(page.size() - 1);
-            nextLastId = tail.getId();
-            // 별점 정렬일 때만 lastStar 응답에 포함
-            if (sort == ReviewSort.STAR) {
-                nextLastStar = tail.getStar();
-            }
+        Slice<Review> slice;
+        if (sort == ReviewSort.STAR) {
+            slice = fetchByStar(userId, cursor, size);
+        } else {
+            slice = fetchById(userId, cursor, size);
         }
 
-        return ReviewConverter.toMyReviewListResponse(page, hasNext, nextLastId, nextLastStar);
+        Slice<ReviewResponseDto.MyReviewItem> mapped =
+                slice.map(ReviewConverter::toMyReviewItem);
+
+        String nextCursor = null;
+        if (slice.hasNext()) {
+            Review tail = slice.getContent().getLast();
+            nextCursor = (sort == ReviewSort.STAR)
+                    ? tail.getStar() + ":" + tail.getId()
+                    : String.valueOf(tail.getId());
+        }
+
+        return Pagination.of(mapped, nextCursor);
+    }
+
+    private Slice<Review> fetchById(Long userId, String cursor, int size) {
+        Long lastId = parseLongOrNull(cursor);
+        return reviewRepository.findMyReviewsOrderById(userId, lastId, PageRequest.of(0, size));
+    }
+
+    private Slice<Review> fetchByStar(Long userId, String cursor, int size) {
+        Float lastStar = null;
+        Long lastId = null;
+        if (cursor != null && !cursor.isBlank()) {
+            String[] parts = cursor.split(":");
+            if (parts.length != 2) {
+                throw new ProjectException(GeneralErrorCode.BAD_REQUEST);
+            }
+            lastStar = Float.parseFloat(parts[0]);
+            lastId = Long.parseLong(parts[1]);
+        }
+        return reviewRepository.findMyReviewsOrderByStar(userId, lastStar, lastId, PageRequest.of(0, size));
+    }
+
+    private Long parseLongOrNull(String cursor) {
+        return (cursor == null || cursor.isBlank()) ? null : Long.parseLong(cursor);
     }
 }
