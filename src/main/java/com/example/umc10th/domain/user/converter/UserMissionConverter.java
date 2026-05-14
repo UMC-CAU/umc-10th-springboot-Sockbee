@@ -2,6 +2,7 @@ package com.example.umc10th.domain.user.converter;
 
 import com.example.umc10th.domain.user.dto.UserMissionResponseDto;
 import com.example.umc10th.domain.user.entity.UserMission;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,6 +45,20 @@ public class UserMissionConverter {
                 .status(um.getStatus())
                 .earnedPoint(um.getMission().getCompletePoint())
                 .closedAt(um.getClosedAt())
+                .build();
+    }
+
+    public static UserMissionResponseDto.ChallengingMissionListResponse toChallengingMissionListResponse(Page<UserMission> page) {
+        List<UserMissionResponseDto.UserMissionItem> items = page.getContent().stream()
+                .map(UserMissionConverter::toUserMissionItem)
+                .toList();
+        return UserMissionResponseDto.ChallengingMissionListResponse.builder()
+                .missions(items)
+                .currentPage(page.getNumber())
+                .totalPages(page.getTotalPages())
+                .totalElements(page.getTotalElements())
+                .hasNext(page.hasNext())
+                .hasPrevious(page.hasPrevious())
                 .build();
     }
 }
