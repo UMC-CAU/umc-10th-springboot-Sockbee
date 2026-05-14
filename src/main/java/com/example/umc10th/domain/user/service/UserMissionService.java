@@ -9,6 +9,7 @@ import com.example.umc10th.domain.user.dto.UserMissionResponseDto;
 import com.example.umc10th.domain.user.entity.UserMission;
 import com.example.umc10th.domain.user.repository.UserMissionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -94,5 +95,20 @@ public class UserMissionService {
         } catch (IllegalArgumentException e) {
             throw new MissionException(MissionErrorCode.INVALID_MISSION_STATUS);
         }
+    }
+
+    /**
+     * 진행 중(CHALLENGING)인 내 미션 조회 — 오프셋 페이지네이션.
+     * userId는 RequestBody의 DTO에서 받아 하드코딩 X.
+     */
+    public UserMissionResponseDto.ChallengingMissionListResponse getChallengingMissions(
+            UserMissionRequestDto.GetChallengingMissionsRequest req) {
+
+        Page<UserMission> page = userMissionRepository.findChallengingMissions(
+                req.userId(),
+                PageRequest.of(req.page(), req.size())
+        );
+
+        return UserMissionConverter.toChallengingMissionListResponse(page);
     }
 }
