@@ -7,6 +7,8 @@ import com.example.umc10th.domain.review.enums.ReviewStatus;
 import com.example.umc10th.domain.store.entity.Store;
 import com.example.umc10th.domain.user.entity.User;
 
+import java.util.List;
+
 public class ReviewConverter {
 
     public static Review toReview(ReviewRequestDto.CreateReviewRequest req, User user, Store store) {
@@ -26,6 +28,32 @@ public class ReviewConverter {
                 .storeName(review.getStore().getName())
                 .star(review.getStar())
                 .createdAt(review.getCreatedAt())
+                .build();
+    }
+
+    /**
+     * 내 리뷰 아이템 — imageUrl(사진) 의도적으로 제외.
+     */
+    public static ReviewResponseDto.MyReviewItem toMyReviewItem(Review review) {
+        return ReviewResponseDto.MyReviewItem.builder()
+                .reviewId(review.getId())
+                .storeName(review.getStore().getName())
+                .star(review.getStar())
+                .content(review.getContent())
+                .createdAt(review.getCreatedAt())
+                .build();
+    }
+
+    public static ReviewResponseDto.MyReviewListResponse toMyReviewListResponse(
+            List<Review> reviews, boolean hasNext, Long lastId, Float lastStar) {
+        List<ReviewResponseDto.MyReviewItem> items = reviews.stream()
+                .map(ReviewConverter::toMyReviewItem)
+                .toList();
+        return ReviewResponseDto.MyReviewListResponse.builder()
+                .reviews(items)
+                .hasNext(hasNext)
+                .lastId(lastId)
+                .lastStar(lastStar)
                 .build();
     }
 }
