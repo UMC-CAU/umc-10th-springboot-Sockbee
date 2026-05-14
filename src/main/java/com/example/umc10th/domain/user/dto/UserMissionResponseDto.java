@@ -43,4 +43,18 @@ public class UserMissionResponseDto {
         private int earnedPoint;
         private LocalDateTime closedAt;
     }
+
+    /**
+     * 진행 중인 미션 목록 응답 — 오프셋 페이지네이션 메타데이터 포함.
+     */
+    @Getter
+    @Builder
+    public static class ChallengingMissionListResponse {
+        private List<UserMissionItem> missions;
+        private int currentPage;     // 0-based
+        private int totalPages;
+        private long totalElements;
+        private boolean hasNext;
+        private boolean hasPrevious;
+    }
 }
