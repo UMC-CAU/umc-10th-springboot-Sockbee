@@ -14,6 +14,11 @@ spring:
     show-sql: true # 실행된 SQL 쿼리를 콘솔에 출력할지 여부 설정
     hibernate:
       ddl-auto: update # 애플리케이션 실행 시 데이터베이스 스키마의 상태를 설정
+    defer-datasource-initialization: true # data.sql을 Hibernate 스키마 생성 이후에 실행
     properties:
       hibernate:
         format_sql: true # 출력되는 SQL 쿼리를 보기 좋게 포맷팅
+
+  sql:
+    init:
+      mode: always # data.sql을 매 실행마다 적용 (INSERT IGNORE로 중복 방지)
