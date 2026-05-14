@@ -4,12 +4,12 @@ import com.example.umc10th.domain.mission.enums.MissionStatus;
 import com.example.umc10th.domain.user.entity.UserMission;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public interface UserMissionRepository extends JpaRepository<UserMission, Long> {
 
@@ -43,7 +43,7 @@ public interface UserMissionRepository extends JpaRepository<UserMission, Long> 
                    OR (um.createdAt = :lastCreatedAt AND um.id < :lastId))
             ORDER BY um.createdAt DESC, um.id DESC
             """)
-    List<UserMission> findMyMissions(
+    Slice<UserMission> findMyMissions(
             @Param("userId") Long userId,
             @Param("status") MissionStatus status,
             @Param("lastId") Long lastId,
