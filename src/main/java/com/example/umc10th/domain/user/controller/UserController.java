@@ -2,6 +2,7 @@ package com.example.umc10th.domain.user.controller;
 
 import com.example.umc10th.domain.review.dto.ReviewRequestDto;
 import com.example.umc10th.domain.review.dto.ReviewResponseDto;
+import com.example.umc10th.domain.review.enums.ReviewSort;
 import com.example.umc10th.domain.review.service.ReviewService;
 import com.example.umc10th.domain.user.dto.UserMissionRequestDto;
 import com.example.umc10th.domain.user.dto.UserMissionResponseDto;
@@ -61,5 +62,21 @@ public class UserController {
     ) {
         return ApiResponse.onSuccess(GeneralSuccessCode.CREATED,
                 reviewService.createReview(userId, request));
+    }
+
+    /**
+     * 내가 생성한 리뷰 목록 조회 (커서 페이지네이션).
+     * sort=ID(기본) 또는 sort=STAR로 정렬 방식 선택.
+     */
+    @GetMapping("/reviews")
+    public ApiResponse<ReviewResponseDto.MyReviewListResponse> getMyReviews(
+            @RequestParam Long userId,   // TODO: JWT 구현 후 @AuthenticationPrincipal로 교체
+            @RequestParam(defaultValue = "ID") ReviewSort sort,
+            @RequestParam(required = false) Long lastId,
+            @RequestParam(required = false) Float lastStar,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ApiResponse.onSuccess(GeneralSuccessCode.OK,
+                reviewService.getMyReviews(userId, sort, lastId, lastStar, size));
     }
 }
