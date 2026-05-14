@@ -4,7 +4,6 @@ import com.example.umc10th.domain.user.dto.UserMissionResponseDto;
 import com.example.umc10th.domain.user.entity.UserMission;
 import org.springframework.data.domain.Page;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class UserMissionConverter {
@@ -23,19 +22,6 @@ public class UserMissionConverter {
                 .completePoint(um.getMission().getCompletePoint())
                 .status(um.getStatus())
                 .startedAt(um.getStartedAt())
-                .build();
-    }
-
-    public static UserMissionResponseDto.MyMissionListResponse toMyMissionListResponse(
-            List<UserMission> userMissions, boolean hasNext, Long lastId, LocalDateTime lastCreatedAt) {
-        List<UserMissionResponseDto.UserMissionItem> items = userMissions.stream()
-                .map(UserMissionConverter::toUserMissionItem)
-                .toList();
-        return UserMissionResponseDto.MyMissionListResponse.builder()
-                .missions(items)
-                .hasNext(hasNext)
-                .lastId(lastId)
-                .lastCreatedAt(lastCreatedAt)
                 .build();
     }
 
