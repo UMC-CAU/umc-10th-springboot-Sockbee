@@ -28,4 +28,17 @@ public class ReviewConverter {
                 .createdAt(review.getCreatedAt())
                 .build();
     }
+
+    /**
+     * 내 리뷰 아이템 — imageUrl(사진) 의도적으로 제외.
+     */
+    public static ReviewResponseDto.MyReviewItem toMyReviewItem(Review review) {
+        return ReviewResponseDto.MyReviewItem.builder()
+                .reviewId(review.getId())
+                .storeName(review.getStore().getName())
+                .star(review.getStar())
+                .content(review.getContent())
+                .createdAt(review.getCreatedAt())
+                .build();
+    }
 }

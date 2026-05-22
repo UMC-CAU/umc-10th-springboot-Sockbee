@@ -2,8 +2,8 @@ package com.example.umc10th.domain.user.converter;
 
 import com.example.umc10th.domain.user.dto.UserMissionResponseDto;
 import com.example.umc10th.domain.user.entity.UserMission;
+import org.springframework.data.domain.Page;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class UserMissionConverter {
@@ -25,25 +25,26 @@ public class UserMissionConverter {
                 .build();
     }
 
-    public static UserMissionResponseDto.MyMissionListResponse toMyMissionListResponse(
-            List<UserMission> userMissions, boolean hasNext, Long lastId, LocalDateTime lastCreatedAt) {
-        List<UserMissionResponseDto.UserMissionItem> items = userMissions.stream()
-                .map(UserMissionConverter::toUserMissionItem)
-                .toList();
-        return UserMissionResponseDto.MyMissionListResponse.builder()
-                .missions(items)
-                .hasNext(hasNext)
-                .lastId(lastId)
-                .lastCreatedAt(lastCreatedAt)
-                .build();
-    }
-
     public static UserMissionResponseDto.UpdateMissionStatusResponse toUpdateMissionStatusResponse(UserMission um) {
         return UserMissionResponseDto.UpdateMissionStatusResponse.builder()
                 .userMissionId(um.getId())
                 .status(um.getStatus())
                 .earnedPoint(um.getMission().getCompletePoint())
                 .closedAt(um.getClosedAt())
+                .build();
+    }
+
+    public static UserMissionResponseDto.ChallengingMissionListResponse toChallengingMissionListResponse(Page<UserMission> page) {
+        List<UserMissionResponseDto.UserMissionItem> items = page.getContent().stream()
+                .map(UserMissionConverter::toUserMissionItem)
+                .toList();
+        return UserMissionResponseDto.ChallengingMissionListResponse.builder()
+                .missions(items)
+                .currentPage(page.getNumber())
+                .totalPages(page.getTotalPages())
+                .totalElements(page.getTotalElements())
+                .hasNext(page.hasNext())
+                .hasPrevious(page.hasPrevious())
                 .build();
     }
 }

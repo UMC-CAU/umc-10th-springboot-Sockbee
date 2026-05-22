@@ -2,13 +2,14 @@ package com.example.umc10th.domain.user.repository;
 
 import com.example.umc10th.domain.mission.enums.MissionStatus;
 import com.example.umc10th.domain.user.entity.UserMission;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public interface UserMissionRepository extends JpaRepository<UserMission, Long> {
 
@@ -42,11 +43,35 @@ public interface UserMissionRepository extends JpaRepository<UserMission, Long> 
                    OR (um.createdAt = :lastCreatedAt AND um.id < :lastId))
             ORDER BY um.createdAt DESC, um.id DESC
             """)
-    List<UserMission> findMyMissions(
+    Slice<UserMission> findMyMissions(
             @Param("userId") Long userId,
             @Param("status") MissionStatus status,
             @Param("lastId") Long lastId,
             @Param("lastCreatedAt") LocalDateTime lastCreatedAt,
+            Pageable pageable
+    );
+
+    /**
+     * 진행 중(CHALLENGING)인 내 미션 목록 — 오프셋 기반 페이징.
+     * JOIN FETCH + Pageable 조합 시 정확한 카운트를 위해 별도 countQuery 지정.
+     */
+    @Query(
+            value = """
+                    SELECT um FROM UserMission um
+                    JOIN FETCH um.mission m
+                    JOIN FETCH m.store s
+                    WHERE um.user.id = :userId
+                      AND um.status = com.example.umc10th.domain.mission.enums.MissionStatus.CHALLENGING
+                    ORDER BY um.createdAt DESC, um.id DESC
+                    """,
+            countQuery = """
+                    SELECT COUNT(um) FROM UserMission um
+                    WHERE um.user.id = :userId
+                      AND um.status = com.example.umc10th.domain.mission.enums.MissionStatus.CHALLENGING
+                    """
+    )
+    Page<UserMission> findChallengingMissions(
+            @Param("userId") Long userId,
             Pageable pageable
     );
 }

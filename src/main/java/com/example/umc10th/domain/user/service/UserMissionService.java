@@ -8,13 +8,16 @@ import com.example.umc10th.domain.user.dto.UserMissionRequestDto;
 import com.example.umc10th.domain.user.dto.UserMissionResponseDto;
 import com.example.umc10th.domain.user.entity.UserMission;
 import com.example.umc10th.domain.user.repository.UserMissionRepository;
+import com.example.umc10th.global.apiPayload.Pagination;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.time.ZoneOffset;
 
 @Service
 @RequiredArgsConstructor
@@ -33,27 +36,39 @@ public class UserMissionService {
 
     /**
      * 내 미션 목록 — createdAt + id 복합 커서 페이징.
+     * cursor 포맷: "{epochMilli}:{id}" (opaque)
      */
-    public UserMissionResponseDto.MyMissionListResponse getMyMissions(
-            Long userId, String status, Long lastId, LocalDateTime lastCreatedAt, int size) {
+    public Pagination<UserMissionResponseDto.UserMissionItem> getMyMissions(
+            Long userId, String status, String cursor, int size) {
 
         MissionStatus parsedStatus = parseStatus(status);
 
-        List<UserMission> rows = userMissionRepository.findMyMissions(
-                userId, parsedStatus, lastId, lastCreatedAt, PageRequest.of(0, size + 1));
-
-        boolean hasNext = rows.size() > size;
-        List<UserMission> page = hasNext ? rows.subList(0, size) : rows;
-
-        Long nextLastId = null;
-        LocalDateTime nextLastCreatedAt = null;
-        if (!page.isEmpty()) {
-            UserMission tail = page.get(page.size() - 1);
-            nextLastId = tail.getId();
-            nextLastCreatedAt = tail.getCreatedAt();
+        Long lastId = null;
+        LocalDateTime lastCreatedAt = null;
+        if (cursor != null && !cursor.isBlank()) {
+            String[] parts = cursor.split(":");
+            if (parts.length != 2) {
+                throw new MissionException(MissionErrorCode.INVALID_MISSION_STATUS);
+            }
+            lastCreatedAt = LocalDateTime.ofEpochSecond(
+                    Long.parseLong(parts[0]) / 1000, 0, ZoneOffset.UTC);
+            lastId = Long.parseLong(parts[1]);
         }
 
-        return UserMissionConverter.toMyMissionListResponse(page, hasNext, nextLastId, nextLastCreatedAt);
+        Slice<UserMission> slice = userMissionRepository.findMyMissions(
+                userId, parsedStatus, lastId, lastCreatedAt, PageRequest.of(0, size));
+
+        Slice<UserMissionResponseDto.UserMissionItem> mapped =
+                slice.map(UserMissionConverter::toUserMissionItem);
+
+        String nextCursor = null;
+        if (slice.hasNext()) {
+            UserMission tail = slice.getContent().getLast();
+            long epochMs = tail.getCreatedAt().toInstant(ZoneOffset.UTC).toEpochMilli();
+            nextCursor = epochMs + ":" + tail.getId();
+        }
+
+        return Pagination.of(mapped, nextCursor);
     }
 
     /**
@@ -66,24 +81,18 @@ public class UserMissionService {
         UserMission userMission = userMissionRepository.findById(userMissionId)
                 .orElseThrow(() -> new MissionException(MissionErrorCode.USER_MISSION_NOT_FOUND));
 
-        // 본인 소유 검증
         if (!userMission.getUser().getId().equals(userId)) {
             throw new MissionException(MissionErrorCode.USER_MISSION_FORBIDDEN);
         }
-
-        // 이미 완료된 미션 차단
         if (userMission.getStatus() == MissionStatus.COMPLETE) {
             throw new MissionException(MissionErrorCode.MISSION_ALREADY_COMPLETED);
         }
-
-        // 요청은 COMPLETE만 허용 (현재 API 스펙 기준)
         if (req.status() != MissionStatus.COMPLETE) {
             throw new MissionException(MissionErrorCode.INVALID_MISSION_STATUS);
         }
 
         userMission.complete();
         userMission.getUser().addPoint(userMission.getMission().getCompletePoint());
-        // dirty checking으로 자동 저장
 
         return UserMissionConverter.toUpdateMissionStatusResponse(userMission);
     }
@@ -94,5 +103,20 @@ public class UserMissionService {
         } catch (IllegalArgumentException e) {
             throw new MissionException(MissionErrorCode.INVALID_MISSION_STATUS);
         }
+    }
+
+    /**
+     * 진행 중(CHALLENGING)인 내 미션 조회 — 오프셋 페이지네이션 (Page<> 메타데이터 보존).
+     * 커서 기반과 의도적으로 분리한 케이스.
+     */
+    public UserMissionResponseDto.ChallengingMissionListResponse getChallengingMissions(
+            UserMissionRequestDto.GetChallengingMissionsRequest req) {
+
+        Page<UserMission> page = userMissionRepository.findChallengingMissions(
+                req.userId(),
+                PageRequest.of(req.page(), req.size())
+        );
+
+        return UserMissionConverter.toChallengingMissionListResponse(page);
     }
 }
