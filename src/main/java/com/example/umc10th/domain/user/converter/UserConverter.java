@@ -7,10 +7,11 @@ import com.example.umc10th.domain.user.enums.UserStatus;
 
 public class UserConverter {
 
-    public static User toUser(AuthRequestDto.SignupRequest req) {
+    public static User toUser(AuthRequestDto.SignupRequest req, String encodedPassword) {
         return User.builder()
                 .nickname(req.nickname())
                 .email(req.email())
+                .password(encodedPassword)
                 .name(req.userName())
                 .gender(req.gender())
                 .birthDate(req.birthDate())

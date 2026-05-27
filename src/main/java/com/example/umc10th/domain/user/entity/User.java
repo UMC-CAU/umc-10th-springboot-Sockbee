@@ -41,6 +41,9 @@ public class User {
     @Column(nullable = false, length = 100)
     private String email;
 
+    @Column(nullable = false)
+    private String password; // BCrypt 해시 저장
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserStatus status;

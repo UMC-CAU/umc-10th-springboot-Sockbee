@@ -13,6 +13,7 @@ public class AuthRequestDto {
     public record SignupRequest(
             @NotBlank @Size(max = 50) String nickname,
             @NotBlank @Email String email,
+            @NotBlank String password,
             @NotBlank String userName,
             @NotNull Gender gender,
             @NotNull LocalDate birthDate,
