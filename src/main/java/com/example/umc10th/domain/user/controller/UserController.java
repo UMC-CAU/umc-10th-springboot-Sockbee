@@ -6,12 +6,16 @@ import com.example.umc10th.domain.review.enums.ReviewSort;
 import com.example.umc10th.domain.review.service.ReviewService;
 import com.example.umc10th.domain.user.dto.UserMissionRequestDto;
 import com.example.umc10th.domain.user.dto.UserMissionResponseDto;
+import com.example.umc10th.domain.user.dto.UserResponseDto;
 import com.example.umc10th.domain.user.service.UserMissionService;
+import com.example.umc10th.domain.user.service.UserService;
 import com.example.umc10th.global.apiPayload.ApiResponse;
 import com.example.umc10th.global.apiPayload.Pagination;
 import com.example.umc10th.global.apiPayload.code.GeneralSuccessCode;
+import com.example.umc10th.global.security.AuthMember;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,6 +25,15 @@ public class UserController {
 
     private final UserMissionService userMissionService;
     private final ReviewService reviewService;
+    private final UserService userService;
+
+    // 마이페이지 — 내 정보 조회 (JWT 인증 필요)
+    @GetMapping("")
+    public ApiResponse<UserResponseDto.GetInfo> getMyInfo(
+            @AuthenticationPrincipal AuthMember member
+    ) {
+        return ApiResponse.onSuccess(GeneralSuccessCode.OK, userService.getInfo(member));
+    }
 
     @GetMapping("/missions/count")
     public ApiResponse<UserMissionResponseDto.MissionCountResponse> getMissionCount(
