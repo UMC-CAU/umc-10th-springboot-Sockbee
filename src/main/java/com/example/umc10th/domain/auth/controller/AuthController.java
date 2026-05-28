@@ -25,4 +25,11 @@ public class AuthController {
     ) {
         return ApiResponse.onSuccess(GeneralSuccessCode.CREATED, authService.signup(request));
     }
+
+    @PostMapping("/login")
+    public ApiResponse<AuthResponseDto.LoginResponse> login(
+            @Valid @RequestBody AuthRequestDto.LoginRequest request
+    ) {
+        return ApiResponse.onSuccess(GeneralSuccessCode.OK, authService.login(request));
+    }
 }

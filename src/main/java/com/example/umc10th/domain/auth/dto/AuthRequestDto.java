@@ -21,4 +21,9 @@ public class AuthRequestDto {
             @NotBlank String addressDetail,
             @NotBlank @Size(min = 5, max = 5) String zipCode
     ) {}
+
+    public record LoginRequest(
+            @NotBlank @Email String email,
+            @NotBlank String password
+    ) {}
 }

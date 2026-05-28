@@ -34,6 +34,14 @@ public class UserConverter {
                 .build();
     }
 
+    public static AuthResponseDto.LoginResponse toLoginResponse(User user, String accessToken) {
+        return AuthResponseDto.LoginResponse.builder()
+                .accessToken(accessToken)
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .build();
+    }
+
     public static UserResponseDto.GetInfo toGetInfo(User user) {
         return UserResponseDto.GetInfo.builder()
                 .userId(user.getId())

@@ -15,4 +15,12 @@ public class AuthResponseDto {
         private String email;
         private LocalDateTime createdAt;
     }
+
+    @Getter
+    @Builder
+    public static class LoginResponse {
+        private String accessToken;
+        private Long userId;
+        private String nickname;
+    }
 }
