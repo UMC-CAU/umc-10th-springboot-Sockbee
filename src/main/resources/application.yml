@@ -28,6 +28,7 @@ jwt:
     secretKey: ${JWT_SECRET_KEY}
     expiration:
       access: 1800000 # 30분
+      signup: 600000  # 10분 (OAuth 임시 가입 토큰)
 
 kakao:
   client-id: ${KAKAO_CLIENT_ID}

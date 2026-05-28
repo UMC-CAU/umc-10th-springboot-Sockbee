@@ -30,4 +30,15 @@ public class AuthRequestDto {
     public record KakaoLoginRequest(
             @NotBlank String code
     ) {}
+
+    public record KakaoSignupRequest(
+            @NotBlank String signupToken,
+            @NotBlank @Size(max = 50) String nickname,
+            @NotBlank String userName,
+            @NotNull Gender gender,
+            @NotNull LocalDate birthDate,
+            @NotBlank String addressMain,
+            @NotBlank String addressDetail,
+            @NotBlank @Size(min = 5, max = 5) String zipCode
+    ) {}
 }
