@@ -26,4 +26,8 @@ public class AuthRequestDto {
             @NotBlank @Email String email,
             @NotBlank String password
     ) {}
+
+    public record KakaoLoginRequest(
+            @NotBlank String code
+    ) {}
 }

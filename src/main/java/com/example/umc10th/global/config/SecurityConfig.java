@@ -45,8 +45,8 @@ public class SecurityConfig {
                 )
                 // URI 허용 여부
                 .authorizeHttpRequests(requests -> requests
-                        // Public API: 회원가입 / 로그인
-                        .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/login").permitAll()
+                        // Public API: 회원가입 / 로그인 / OAuth
+                        .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/login", "/api/auth/oauth/**").permitAll()
                         // Swagger
                         .requestMatchers(swaggerUris).permitAll()
                         // Private API: 그 외 모든 요청은 인증 필요
