@@ -16,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    // 로그인 없이 접근 가능한 경로 (Swagger: 개발 편의상 허용)
+    // 로그인 없이 접근 가능한 경로 (Swagger - 개발 편의상 허용)
     private final String[] swaggerUris = {
             "/swagger-ui/**",
             "/swagger-resources/**",
