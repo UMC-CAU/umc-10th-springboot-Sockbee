@@ -22,3 +22,15 @@ spring:
   sql:
     init:
       mode: always # data.sql을 매 실행마다 적용 (INSERT IGNORE로 중복 방지)
+
+jwt:
+  token:
+    secretKey: ${JWT_SECRET_KEY}
+    expiration:
+      access: 1800000 # 30분
+      signup: 600000  # 10분 (OAuth 임시 가입 토큰)
+
+kakao:
+  client-id: ${KAKAO_CLIENT_ID}
+  client-secret: ${KAKAO_CLIENT_SECRET}
+  redirect-uri: ${KAKAO_REDIRECT_URI}

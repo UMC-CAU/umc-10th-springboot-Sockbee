@@ -2,6 +2,7 @@ package com.example.umc10th.domain.user.converter;
 
 import com.example.umc10th.domain.auth.dto.AuthRequestDto;
 import com.example.umc10th.domain.auth.dto.AuthResponseDto;
+import com.example.umc10th.domain.user.dto.UserResponseDto;
 import com.example.umc10th.domain.user.entity.User;
 import com.example.umc10th.domain.user.enums.UserStatus;
 
@@ -30,6 +31,25 @@ public class UserConverter {
                 .nickname(user.getNickname())
                 .email(user.getEmail())
                 .createdAt(user.getCreatedAt())
+                .build();
+    }
+
+    public static AuthResponseDto.LoginResponse toLoginResponse(User user, String accessToken) {
+        return AuthResponseDto.LoginResponse.builder()
+                .accessToken(accessToken)
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .build();
+    }
+
+    public static UserResponseDto.GetInfo toGetInfo(User user) {
+        return UserResponseDto.GetInfo.builder()
+                .userId(user.getId())
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .name(user.getName())
+                .point(user.getPoint())
+                .missionCount(user.getMissionCount())
                 .build();
     }
 }

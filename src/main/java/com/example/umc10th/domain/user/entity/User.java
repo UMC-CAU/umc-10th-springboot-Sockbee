@@ -32,7 +32,7 @@ public class User {
     @Column(name = "phone_num", length = 13)
     private String phoneNum;
 
-    @Column(name = "user_name", nullable = false, length = 50)
+    @Column(name = "user_name", length = 50)
     private String name;
 
     @Column(nullable = false, length = 50)
@@ -48,7 +48,7 @@ public class User {
     @Column(nullable = false)
     private UserStatus status;
 
-    @Column(name = "birth_date", nullable = false)
+    @Column(name = "birth_date")
     private LocalDate birthDate;
 
     @Column(name = "zip_code", length = 5)
